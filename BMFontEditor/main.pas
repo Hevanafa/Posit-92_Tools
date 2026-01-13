@@ -12,10 +12,16 @@ uses
   BMFont, Conv, Imgref, ImgRefFast, Logger, UStrings, VGA;
 
 type
+
+  { TForm1 }
+
   TForm1 = class(TForm)
     btnRender: TButton;
+    btnExportPNG: TButton;
     imgCanvas: TImage;
     memoInput: TMemo;
+    SaveDialog1: TSaveDialog;
+    procedure btnExportPNGClick(Sender: TObject);
     procedure btnRenderClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure vgaFlush;
@@ -244,6 +250,24 @@ begin
   end;
 
   vgaFlush
+end;
+
+procedure TForm1.btnExportPNGClick(Sender: TObject);
+var
+  png: TPortableNetworkGraphic;
+begin
+  if SaveDialog1.Execute then begin
+    png := TPortableNetworkGraphic.create;
+
+    try
+      png.Assign(imgCanvas.Picture.Bitmap);
+      png.SaveToFile(SaveDialog1.FileName);
+
+      ShowMessage('Exported as ' + SaveDialog1.FileName);
+    finally
+      png.free
+    end;
+  end;
 end;
 
 end.
