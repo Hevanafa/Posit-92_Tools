@@ -1,11 +1,11 @@
 object Form1: TForm1
   Left = 1850
-  Height = 264
+  Height = 455
   Top = 100
-  Width = 498
+  Width = 820
   Caption = 'Form1'
-  ClientHeight = 264
-  ClientWidth = 498
+  ClientHeight = 455
+  ClientWidth = 820
   OnCreate = FormCreate
   object memoInput: TMemo
     Left = 8
@@ -16,9 +16,11 @@ object Form1: TForm1
   end
   object imgCanvas: TImage
     Left = 168
-    Height = 200
+    Height = 400
     Top = 16
-    Width = 320
+    Width = 640
+    Proportional = True
+    Stretch = True
   end
   object btnRender: TButton
     Left = 48
@@ -30,9 +32,9 @@ object Form1: TForm1
     OnClick = btnRenderClick
   end
   object btnExportPNG: TButton
-    Left = 272
+    Left = 216
     Height = 25
-    Top = 224
+    Top = 424
     Width = 104
     Caption = 'Export as PNG'
     TabOrder = 2
@@ -41,7 +43,7 @@ object Form1: TForm1
   object SaveDialog1: TSaveDialog
     DefaultExt = '.png'
     Filter = 'PNG files (*.png)|*.png'
-    Left = 8
-    Top = 200
+    Left = 24
+    Top = 216
   end
 end
