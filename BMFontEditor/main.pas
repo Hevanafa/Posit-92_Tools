@@ -12,13 +12,11 @@ uses
   BMFont, Conv, Imgref, ImgRefFast, Logger, UStrings, VGA;
 
 type
-
-  { TForm1 }
-
   TForm1 = class(TForm)
     btnRender: TButton;
     imgCanvas: TImage;
     memoInput: TMemo;
+    procedure btnRenderClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure vgaFlush;
   private
@@ -29,6 +27,9 @@ type
 
 var
   Form1: TForm1;
+
+const
+  CornflowerBlue = $FF6495ED;
 
 implementation
 
@@ -190,7 +191,6 @@ begin
   bmp.PixelFormat := pf32bit;  { 32-bit BGRA }
   bmp.SetSize(vgaWidth, vgaHeight);
 
-  { Flush }
   bmp.BeginUpdate;  { Important: allocate TBitmap buffer }
 
   srcPtr := PByte(getSurfacePtr);
@@ -211,7 +211,6 @@ begin
 
   bmp.EndUpdate;
   imgCanvas.Invalidate
-  { End flush }
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -221,8 +220,20 @@ begin
   loadBMFont('assets/fonts/nokia_cellphone_fc_8.txt', defaultFont, defaultFontGlyphs);
 
   { Begin drawing }
-  cls($FF6495ED);
-  spr(defaultFont.imgHandle, 10, 10);
+  cls(CornflowerBlue);
+  { spr(defaultFont.imgHandle, 10, 10); }
+  printBMFont(defaultFont, defaultFontGlyphs, 'Hello world!', 10, 10);
+
+  vgaFlush
+end;
+
+procedure TForm1.btnRenderClick(Sender: TObject);
+begin
+  cls(CornflowerBlue);
+
+  printBMFont(defaultFont, defaultFontGlyphs,
+    memoInput.Lines[0],
+    10, 10);
 
   vgaFlush
 end;
