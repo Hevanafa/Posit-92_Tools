@@ -35,6 +35,26 @@ implementation
 
 { TForm1 }
 
+function loadImage(const filename: string): longint;
+var
+  png: TPortableNetworkGraphic;
+  imgHandle: longint;
+  src, dest: PByte;
+begin
+  png := TPortableNetworkGraphic.create;
+
+  try
+    png.LoadFromFile(filename);
+
+    { TODO: copy to ImgRef }
+    imgHandle := newImage(png.Width, png.Height);
+    { TODO: Obtain pixels from src }
+    dest := image^.dataPtr;
+  finally
+    png.free
+  end;
+end;
+
 { 32 to 126: 0 to 94 }
 procedure loadBMFont(const filename: string; var font: TBMFont; var fontGlyphs: array of TBMFontGlyph);
 var
