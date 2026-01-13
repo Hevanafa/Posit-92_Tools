@@ -3,7 +3,8 @@ object Form1: TForm1
   Height = 455
   Top = 100
   Width = 820
-  Caption = 'Form1'
+  BorderStyle = bsDialog
+  Caption = 'BMFont Text Editor - By Hevanafa (Jan 2026)'
   ClientHeight = 455
   ClientWidth = 820
   OnCreate = FormCreate
