@@ -20,6 +20,7 @@ type
     imgCanvas: TImage;
     memoInput: TMemo;
     procedure FormCreate(Sender: TObject);
+    procedure vgaFlush;
   private
 
   public
@@ -177,7 +178,7 @@ begin
   writeLogI32(font.imgHandle);
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TForm1.vgaFlush;
 var
   bmp: TBitmap;
   destPtr: PByte;
@@ -185,17 +186,9 @@ var
   bufferSize: integer;
   a: LongWord;
 begin
-  { init }
   bmp := imgCanvas.Picture.Bitmap;
   bmp.PixelFormat := pf32bit;  { 32-bit BGRA }
   bmp.SetSize(vgaWidth, vgaHeight);
-
-  initBuffer;
-  loadBMFont('assets/fonts/nokia_cellphone_fc_8.txt', defaultFont, defaultFontGlyphs);
-
-  { Begin drawing }
-  cls($FF6495ED);
-  spr(defaultFont.imgHandle, 10, 10);
 
   { Flush }
   bmp.BeginUpdate;  { Important: allocate TBitmap buffer }
@@ -219,6 +212,19 @@ begin
   bmp.EndUpdate;
   imgCanvas.Invalidate
   { End flush }
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  { init }
+  initBuffer;
+  loadBMFont('assets/fonts/nokia_cellphone_fc_8.txt', defaultFont, defaultFontGlyphs);
+
+  { Begin drawing }
+  cls($FF6495ED);
+  spr(defaultFont.imgHandle, 10, 10);
+
+  vgaFlush
 end;
 
 end.
