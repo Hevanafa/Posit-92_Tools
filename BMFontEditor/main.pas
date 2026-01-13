@@ -9,7 +9,7 @@ uses
   Classes, SysUtils, Forms, Controls,
   Graphics, Dialogs, StdCtrls, ExtCtrls,
   { Shared Posit-92 units }
-  BMFont, Conv, Logger, UStrings, VGA;
+  BMFont, Conv, Imgref, ImgRefFast, Logger, UStrings, VGA;
 
 type
 
@@ -35,21 +35,38 @@ implementation
 
 { TForm1 }
 
+var
+  defaultFont: TBMFont;
+  defaultFontGlyphs: array[32..126] of TBMFontGlyph;
+
 function loadImage(const filename: string): longint;
 var
   png: TPortableNetworkGraphic;
   imgHandle: longint;
   src, dest: PByte;
+  px, py: word;
 begin
   png := TPortableNetworkGraphic.create;
 
   try
     png.LoadFromFile(filename);
 
-    { TODO: copy to ImgRef }
     imgHandle := newImage(png.Width, png.Height);
-    { TODO: Obtain pixels from src }
-    dest := image^.dataPtr;
+
+    src := PByte(png.RawImage.data);
+    dest := getImagePtr(imgHandle)^.dataPtr;
+
+    for py := 0 to png.Height - 1 do
+    for px := 0 to png.Width - 1 do begin
+      dest[0] := src[2];
+      dest[1] := src[1];
+      dest[2] := src[0];
+      dest[3] := src[3];
+      inc(src, 4);
+      inc(dest, 4);
+    end;
+
+    Result := imgHandle
   finally
     png.free
   end;
@@ -168,13 +185,19 @@ var
   bufferSize: integer;
   a: LongWord;
 begin
-  initBuffer;
-  cls($FF6495ED);
-
+  { init }
   bmp := imgCanvas.Picture.Bitmap;
   bmp.PixelFormat := pf32bit;  { 32-bit BGRA }
   bmp.SetSize(vgaWidth, vgaHeight);
 
+  initBuffer;
+  loadBMFont('assets/fonts/nokia_cellphone_fc_8.txt', defaultFont, defaultFontGlyphs);
+
+  { Begin drawing }
+  cls($FF6495ED);
+  spr(defaultFont.imgHandle, 10, 10);
+
+  { Flush }
   bmp.BeginUpdate;  { Important: allocate TBitmap buffer }
 
   srcPtr := PByte(getSurfacePtr);
@@ -195,6 +218,7 @@ begin
 
   bmp.EndUpdate;
   imgCanvas.Invalidate
+  { End flush }
 end;
 
 end.
