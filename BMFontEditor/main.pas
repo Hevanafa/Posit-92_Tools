@@ -228,12 +228,20 @@ begin
 end;
 
 procedure TForm1.btnRenderClick(Sender: TObject);
+var
+  a: word;
+  line: string;
 begin
   cls(CornflowerBlue);
 
-  printBMFont(defaultFont, defaultFontGlyphs,
-    memoInput.Lines[0],
-    10, 10);
+  a := 0;
+  for line in memoInput.lines do begin
+    printBMFont(defaultFont, defaultFontGlyphs,
+      line,
+      10, 10 + a * defaultFont.lineHeight);
+
+    inc(a)
+  end;
 
   vgaFlush
 end;
