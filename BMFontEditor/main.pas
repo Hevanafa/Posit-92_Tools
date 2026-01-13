@@ -38,27 +38,35 @@ procedure TForm1.FormCreate(Sender: TObject);
 var
   bmp: TBitmap;
   destPtr: PByte;
-  srcPtr: PByteArray;
+  srcPtr: PByte;
   bufferSize: integer;
+  a: LongWord;
 begin
   initBuffer;
   cls($FF6495ED);
 
   bmp := Image1.Picture.Bitmap;
-  bmp.PixelFormat := pf32bit;  { RGBA }
+  bmp.PixelFormat := pf32bit;  { 32-bit BGRA }
   bmp.SetSize(vgaWidth, vgaHeight);
 
   bmp.BeginUpdate;  { Important: allocate TBitmap buffer }
 
-  srcPtr := getSurfacePtr;
+  srcPtr := PByte(getSurfacePtr);
   destPtr := PByte(bmp.RawImage.Data);
   bufferSize := vgaWidth * vgaHeight * 4;
 
-  { bmp.canvas.Brush.Color := $ED9564; }  { BGR format of cornflower blue }
-  { bmp.canvas.brush.Color := RGBToColor($64, $95, $ED);
-  bmp.canvas.FillRect(0, 0, 320, 200); }
+  { move(srcPtr^, destPtr^, bufferSize); }
+  a:=0;
+  while a < bufferSize - 1 do begin
+    destPtr[0] := srcPtr[2];
+    destPtr[1] := srcPtr[1];
+    destPtr[2] := srcPtr[0];
+    destPtr[3] := srcPtr[3];
 
-  move(srcPtr^, destPtr^, bufferSize);
+    inc(srcPtr, 4);
+    inc(destPtr, 4);
+    inc(a, 4)
+  end;
 
   bmp.EndUpdate;
   image1.Invalidate
